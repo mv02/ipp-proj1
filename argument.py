@@ -44,19 +44,19 @@ class Argument:
 
     def _parse_label(self, value: str) -> str:
         """Parse a label argument value."""
-        if not re.match(LABEL_PATTERN, value):
+        if not re.fullmatch(LABEL_PATTERN, value):
             raise ParserError('Invalid label name')
         return value
 
     def _parse_type(self, value: str) -> str:
         """Parse a type argument value."""
-        if not re.match(TYPE_PATTERN, value):
+        if not re.fullmatch(TYPE_PATTERN, value):
             raise ParserError('Invalid type')
         return value
 
     def _parse_variable(self, value: str) -> str:
         """Parse a variable argument value."""
-        if not re.match(VAR_PATTERN, value):
+        if not re.fullmatch(VAR_PATTERN, value):
             raise ParserError('Invalid variable identifier')
         return value
 
@@ -66,14 +66,14 @@ class Argument:
         if not '@' in value:
             raise ParserError('Invalid symbol, expected variable or constant')
 
-        if re.match(VAR_PATTERN, value):
+        if re.fullmatch(VAR_PATTERN, value):
             # The symbol is a variable
             self.arg_type = ArgType.VAR
             return value
 
         prefix, suffix = value.split('@', 1)
 
-        if re.match(TYPE_PATTERN, prefix):
+        if re.fullmatch(TYPE_PATTERN, prefix):
             # The symbol is a constant -- set the argument type accordingly.
             self.arg_type = ArgType[prefix.upper()]
             # Validate the literal after @ and return it as argument value
@@ -86,7 +86,7 @@ class Argument:
     def _validate_literal(self, literal: str):
         """Validate given literal based on the argument type."""
         # Integer in decimal, hexadecimal or octal format
-        if self.arg_type == ArgType.INT and not re.match(INT_PATTERN, literal):
+        if self.arg_type == ArgType.INT and not re.fullmatch(INT_PATTERN, literal):
             raise ParserError('Invalid literal')
 
         # bool@true or bool@false
