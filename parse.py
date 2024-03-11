@@ -4,10 +4,15 @@ import xml.etree.ElementTree as ET
 from instruction import *
 
 
+class ParserError(Exception):
+    pass
+
+
 class Parser:
     def __init__(self):
         self.instructions: list[Instruction] = []
         self.header_parsed = False
+        self.line_count = 0
 
     def _parse_header(self, line: str):
         if line.lower() != '.ippcode24':
@@ -22,7 +27,8 @@ class Parser:
             self.instructions.append(instruction)
         except InvalidOpcodeError:
             sys.exit(22)
-        except:
+        except Exception as e:
+            print(f'Line {self.line_count}: {e}', file=sys.stderr)
             sys.exit(23)
 
     def _strip_comment(self, line: str) -> str:
@@ -33,6 +39,7 @@ class Parser:
 
     def parse(self):
         for line in sys.stdin:
+            self.line_count += 1
             line = self._strip_comment(line).strip()
 
             if line == '':

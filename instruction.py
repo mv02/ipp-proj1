@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 
 from argument import *
+from parse import ParserError
 
 
 OPCODE_PATTERN = '[A-z]+'
@@ -49,10 +50,6 @@ class InvalidOpcodeError(Exception):
     pass
 
 
-class BadArgumentCountError(Exception):
-    pass
-
-
 class Instruction:
     def __init__(self, order: int, opcode: str, args: list[str]):
         self.order = order
@@ -62,7 +59,7 @@ class Instruction:
 
     def _parse_opcode(self, opcode) -> str:
         if re.match(OPCODE_PATTERN, opcode) == None:
-            raise SyntaxError()
+            raise ParserError('Syntax error, expected opcode')
 
         opcode = opcode.upper()
 
@@ -75,7 +72,7 @@ class Instruction:
         res = []
 
         if len(args) != len(self.expected_args):
-            raise BadArgumentCountError()
+            raise ParserError(f'Bad argument count, expected {len(self.expected_args)} argument(s)')
 
         for i, arg in enumerate(args):
             argument = Argument(i + 1, self.expected_args[i], arg)
