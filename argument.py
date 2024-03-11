@@ -9,7 +9,6 @@ INT_PATTERN = r'[-+]?(?:[0-9]+|0o[0-7]+|0x[0-9A-Fa-f]+)\b'
 LABEL_PATTERN = r'[A-Za-z_\-$&%*!?][0-9A-Za-z_\-$&%*!?]*'
 TYPE_PATTERN = 'int|bool|string|nil'
 VAR_PATTERN = r'(GF|TF|LF)@[A-Za-z_\-$&%*!?][0-9A-Za-z_\-$&%*!?]*'
-SYMB_PATTERN = '(GF|TF|LF|int|bool|string|nil)@'
 ESCAPE_PATTERN = r'(?<=\\).{0,3}'
 
 
