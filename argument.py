@@ -31,6 +31,7 @@ class Argument:
         self.value = self._parse_value(value)
 
     def _parse_value(self, value: str) -> str:
+        """Parse and return the argument's value."""
         if self.arg_type == ArgType.LABEL:
             return self._parse_label(value)
         if self.arg_type == ArgType.TYPE:
@@ -42,21 +43,26 @@ class Argument:
         return value
 
     def _parse_label(self, value: str) -> str:
+        """Parse a label argument value."""
         if not re.match(LABEL_PATTERN, value):
             raise ParserError('Invalid label name')
         return value
 
     def _parse_type(self, value: str) -> str:
+        """Parse a type argument value."""
         if not re.match(TYPE_PATTERN, value):
             raise ParserError('Invalid type')
         return value
 
     def _parse_variable(self, value: str) -> str:
+        """Parse a variable argument value."""
         if not re.match(VAR_PATTERN, value):
             raise ParserError('Invalid variable identifier')
         return value
 
     def _parse_symbol(self, value: str) -> str:
+        """Parse a symbol argument value. This can be a variable or a constant."""
+        # The symbol must contain @, otherwise we cannot distinguish its two parts later.
         if not '@' in value:
             raise ParserError('Invalid symbol, expected variable or constant')
 
@@ -78,22 +84,27 @@ class Argument:
         raise ParserError('Invalid symbol, expected variable or constant')
 
     def _validate_literal(self, literal: str):
+        """Validate given literal based on the argument type."""
+        # Integer in decimal, hexadecimal or octal format
         if self.arg_type == ArgType.INT and not re.match(INT_PATTERN, literal):
             raise ParserError('Invalid literal')
 
+        # bool@true or bool@false
         elif self.arg_type == ArgType.BOOL and literal not in ['true', 'false']:
             raise ParserError('Invalid literal')
 
+        # String containing only 3 digit long escape sequences
         elif self.arg_type == ArgType.STRING:
             escapes = re.findall(ESCAPE_PATTERN, literal)
-
             if any(len(e) != 3 or not str(e).isdecimal() for e in escapes):
                 raise ParserError('Invalid escape sequence')
 
+        # nil@nil, nothing else is allowed
         elif self.arg_type == ArgType.NIL and literal != 'nil':
             raise ParserError('Invalid literal')
 
     def to_xml(self) -> ET.Element:
+        """Return an XML representation of the argument."""
         element = ET.Element(f'arg{self.order}', { 'type': self.arg_type.name.lower() })
         element.text = self.value
         return element

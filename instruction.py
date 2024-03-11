@@ -57,23 +57,29 @@ class Instruction:
         self.expected_args = INSTRUCTION_SET[self.opcode]
         self.args = self._parse_args(args)
 
-    def _parse_opcode(self, opcode) -> str:
+    def _parse_opcode(self, opcode: str) -> str:
+        """Parse and return the opcode value."""
+        # Unexpected character
         if re.match(OPCODE_PATTERN, opcode) == None:
             raise ParserError('Syntax error, expected opcode')
 
-        opcode = opcode.upper()
+        opcode = opcode.upper() # The opcode should be in uppercase
 
+        # Opcode is not present in the instruction set
         if not opcode in INSTRUCTION_SET:
             raise InvalidOpcodeError()
 
         return opcode
 
-    def _parse_args(self, args) -> list[Argument]:
+    def _parse_args(self, args: list[str]) -> list[Argument]:
+        """Parse the instruction's arguments and return a list of them."""
         res = []
 
+        # Got a different number of arguments than expected
         if len(args) != len(self.expected_args):
             raise ParserError(f'Bad argument count, expected {len(self.expected_args)} argument(s)')
 
+        # Construct an argument object from all given words
         for i, arg in enumerate(args):
             argument = Argument(i + 1, self.expected_args[i], arg)
             res.append(argument)
@@ -81,10 +87,12 @@ class Instruction:
         return res
 
     def to_xml(self) -> ET.Element:
+        """Return an XML representation of the instruction."""
         attrib = { 'order': str(self.order), 'opcode': self.opcode }
         element = ET.Element('instruction', attrib)
 
         for arg in self.args:
+            # Convert all arguments to XML and append them
             element.append(arg.to_xml())
 
         return element
