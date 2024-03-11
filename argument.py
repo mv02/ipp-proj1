@@ -44,26 +44,26 @@ class Argument:
     def _parse_label(self, value: str) -> str:
         """Parse a label argument value."""
         if not re.fullmatch(LABEL_PATTERN, value):
-            raise ParserError('Invalid label name')
+            raise ParserError('Invalid argument, expected label')
         return value
 
     def _parse_type(self, value: str) -> str:
         """Parse a type argument value."""
         if not re.fullmatch(TYPE_PATTERN, value):
-            raise ParserError('Invalid type')
+            raise ParserError('Invalid argument, expected type')
         return value
 
     def _parse_variable(self, value: str) -> str:
         """Parse a variable argument value."""
         if not re.fullmatch(VAR_PATTERN, value):
-            raise ParserError('Invalid variable identifier')
+            raise ParserError('Invalid argument, expected variable')
         return value
 
     def _parse_symbol(self, value: str) -> str:
         """Parse a symbol argument value. This can be a variable or a constant."""
         # The symbol must contain @, otherwise we cannot distinguish its two parts later.
         if not '@' in value:
-            raise ParserError('Invalid symbol, expected variable or constant')
+            raise ParserError('Invalid argument, expected variable or constant')
 
         if re.fullmatch(VAR_PATTERN, value):
             # The symbol is a variable
@@ -80,17 +80,17 @@ class Argument:
             return suffix
 
         # The symbol does not have a valid frame nor data type prefix
-        raise ParserError('Invalid symbol, expected variable or constant')
+        raise ParserError('Invalid argument, expected variable or constant')
 
     def _validate_literal(self, literal: str):
         """Validate given literal based on the argument type."""
         # Integer in decimal, hexadecimal or octal format
         if self.arg_type == ArgType.INT and not re.fullmatch(INT_PATTERN, literal):
-            raise ParserError('Invalid literal')
+            raise ParserError('Invalid literal, expected type int')
 
         # bool@true or bool@false
         elif self.arg_type == ArgType.BOOL and literal not in ['true', 'false']:
-            raise ParserError('Invalid literal')
+            raise ParserError('Invalid literal, expected type bool')
 
         # String containing only 3 digit long escape sequences
         elif self.arg_type == ArgType.STRING:
@@ -100,7 +100,7 @@ class Argument:
 
         # nil@nil, nothing else is allowed
         elif self.arg_type == ArgType.NIL and literal != 'nil':
-            raise ParserError('Invalid literal')
+            raise ParserError('Invalid literal, expected type nil')
 
     def to_xml(self) -> ET.Element:
         """Return an XML representation of the argument."""
