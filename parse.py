@@ -39,6 +39,8 @@ class Parser:
         self.header_parsed = False
         self.line_count = 0
         self.labels: dict[str, int] = {}
+        self.opcodes: dict[str, int] = {}
+        self.frequent: list[str] = []
         self.count: dict[str, int] = {
             'comments': 0,
             'jumps': 0,
@@ -77,9 +79,19 @@ class Parser:
 
     def _calculate_stats(self):
         """Calculate input program statistics and save them."""
-        # Save defined labels and their location in the program
-        for instruction in filter(lambda x: x.opcode == 'LABEL', self.instructions):
-            self.labels[instruction.args[0].value] = instruction.order
+        for instruction in self.instructions:
+            # Increment number of this opcode occurences
+            if instruction.opcode in self.opcodes:
+                self.opcodes[instruction.opcode] += 1
+            else:
+                self.opcodes[instruction.opcode] = 1
+
+            # Save defined label and its location in the program
+            if instruction.opcode == 'LABEL':
+                self.labels[instruction.args[0].value] = instruction.order
+
+        # Choose the most frequent opcodes
+        self.frequent = sorted([x[0] for x in self.opcodes.items() if x[1] == max(self.opcodes.values())])
 
         jump_instructions = filter(lambda x: x.opcode in JUMP_INSTRUCTIONS, self.instructions)
 
@@ -109,6 +121,8 @@ class Parser:
             return str(len(self.instructions))
         if name == 'labels':
             return str(len(self.labels))
+        if name == 'frequent':
+            return ','.join(self.frequent)
         if name in self.count:
             return str(self.count[name])
         if name.startswith('print='):
