@@ -71,4 +71,13 @@
     V~případě symbolu může být argument buď proměnná nebo konstanta, což se rozhoduje podle části identifikátoru před znakem \texttt{@} a následně je patřičně upřesněn typ atributu.
     Jedná-li se o~konstantu, metoda \texttt{\_validate\_literal()} regulárními výrazy ověří správnost druhé části zápisu.
     V~případě nesprávně zapsaného argumentu či výskytu argumentu neočekávaného typu se vyvolá výjimka \texttt{ParserError} s~konkrétní chybovou zprávou.
+
+    \section{Rozšíření \texttt{STATP}}
+
+    Implementoval jsem rozšíření umožňující výpis statistik o vstupním programu.
+    Argumenty příkazové řádky jsou načteny a zvalidovány funkcí \texttt{parse\_input\_args()}.
+    Jsou-li přítomné argumenty týkající se statistik, zavolá se metoda \texttt{print\_stats()} třídy \texttt{Parser},
+    která nejprve prostřednictvím metody \texttt{\_calculate\_stats()} spočítá projitím seznamu instrukcí všechna statistická data,
+    a následně zpracuje vyžádané skupiny statistik, které nakonec postupným voláním metody \texttt{\_print\_stats\_group()} vypíše do souborů.
+    Chyba v argumentech je indikována vyvoláním výjimky \texttt{OptionsError}.
 \end{document}
