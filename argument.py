@@ -5,7 +5,7 @@ from enum import Enum, auto
 from parse import ParserError
 
 
-INT_PATTERN = r'[-+]?(?:[0-9]+|0o[0-7]+|0x[0-9A-Fa-f]+)\b'
+INT_PATTERN = '[-+]?(?:[0-9]+|0o[0-7]+|0x[0-9A-Fa-f]+)'
 LABEL_PATTERN = r'[A-Za-z_\-$&%*!?][0-9A-Za-z_\-$&%*!?]*'
 TYPE_PATTERN = 'int|bool|string|nil'
 VAR_PATTERN = r'(GF|TF|LF)@[A-Za-z_\-$&%*!?][0-9A-Za-z_\-$&%*!?]*'
