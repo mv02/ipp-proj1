@@ -62,7 +62,7 @@ class Argument:
     def _parse_symbol(self, value: str) -> str:
         """Parse a symbol argument value. This can be a variable or a constant."""
         # The symbol must contain @, otherwise we cannot distinguish its two parts later.
-        if not '@' in value:
+        if '@' not in value:
             raise ParserError('Invalid argument, expected variable or constant')
 
         if re.fullmatch(VAR_PATTERN, value):

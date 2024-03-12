@@ -66,7 +66,7 @@ class Instruction:
         opcode = opcode.upper() # The opcode should be in uppercase
 
         # Opcode is not present in the instruction set
-        if not opcode in INSTRUCTION_SET:
+        if opcode not in INSTRUCTION_SET:
             raise InvalidOpcodeError()
 
         return opcode
